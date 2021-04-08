@@ -1,0 +1,97 @@
+package main
+
+import (
+	"strings"
+	"sync"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+)
+
+// Purger
+type Purger struct {
+	Etherpad *Etherpad
+}
+
+// NewPurger returns a instance of Purger.
+func NewPurger(ep *Etherpad) *Purger {
+	return &Purger{
+		Etherpad: ep,
+	}
+}
+
+// PurgePads loops over a sorted map of pads and removes pads which are not edited for some times.
+func (p *Purger) PurgePads(sorted map[string][]string, concurrency int) {
+	var wg sync.WaitGroup
+
+	for suffix, padIds := range sorted {
+		if suffix == "keep" {
+			continue
+		}
+		wg.Add(1)
+		go p.processPads(padIds, suffix, concurrency, &wg)
+	}
+
+	wg.Wait()
+}
+
+func (p *Purger) processPads(pads []string, suffix string, concurrency int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	log.WithFields(log.Fields{"suffix": suffix, "count": len(pads), "concurrency": concurrency}).Info("start loop")
+	start := time.Now()
+	in := make(chan string)
+	out := make(chan int)
+
+	for x := 0; x < concurrency; x++ {
+		go p.worker(in, out)
+	}
+	go func() {
+		for _, pad := range pads {
+			in <- pad
+		}
+		close(in)
+	}()
+	for n := range out {
+		if n == 0 {
+			break
+		}
+	}
+
+	elapsed := time.Since(start)
+	log.WithFields(log.Fields{"suffix": suffix, "took": elapsed, "processed": len(pads)}).Info("finished loop")
+}
+
+func (p *Purger) worker(pads chan string, out chan int) {
+	for pad := range pads {
+		log.WithField("pad", pad).Debug("Process Pad")
+
+		lastEdited, err := p.Etherpad.GetLastEdited(pad)
+		if err != nil {
+			log.WithError(err).Error("")
+			return
+		}
+
+		deletable := lastEdited.Before(time.Now().Add(padDuration(pad)))
+		if deletable {
+			log.WithField("pad", pad).WithField("lastEdited", lastEdited).Debug("Delete Pad")
+			//TODO: Activate Deletion
+			//err := p.Etherpad.DeletePad(pad)
+			//if err != nil {
+			//	log.WithError(err).WithField("pad", pad).Error("failed to delete pad")
+			//}
+		}
+	}
+	out <- 0
+}
+
+// padDuration returns the time frame in which the pad should be edited.
+func padDuration(padID string) time.Duration {
+	if strings.HasSuffix(padID, "-keep") {
+		return -365 * 24 * time.Hour
+	} else if strings.HasSuffix(padID, "-temp") {
+		return -24 * time.Hour
+	} else {
+		return -30 * 24 * time.Hour
+	}
+}
