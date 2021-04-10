@@ -3,7 +3,8 @@ package metrics
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"github.com/systemli/etherpad-toolchain/pkg"
+	"github.com/systemli/etherpad-toolkit/pkg"
+	"github.com/systemli/etherpad-toolkit/pkg/helper"
 )
 
 type PadCollector struct {
@@ -14,7 +15,7 @@ type PadCollector struct {
 func NewPadCollector(etherpad *pkg.Etherpad) *PadCollector {
 	return &PadCollector{
 		etherpad:     etherpad,
-		PadGaugeDesc: prometheus.NewDesc("etherpad_toolchain_pads", "The current number of pads", []string{"suffix"}, nil),
+		PadGaugeDesc: prometheus.NewDesc("etherpad_toolkit_pads", "The current number of pads", []string{"suffix"}, nil),
 	}
 }
 
@@ -29,7 +30,7 @@ func (pc *PadCollector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	sorted := pkg.SortPads(allPads)
+	sorted := helper.SortPads(allPads)
 
 	for suffix, pads := range sorted {
 		ch <- prometheus.MustNewConstMetric(

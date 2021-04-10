@@ -7,8 +7,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/systemli/etherpad-toolchain/pkg"
-	"github.com/systemli/etherpad-toolchain/pkg/metrics"
+	"github.com/systemli/etherpad-toolkit/pkg"
+	"github.com/systemli/etherpad-toolkit/pkg/metrics"
 )
 
 var (
