@@ -1,4 +1,4 @@
-package pkg
+package purge
 
 import (
 	"strings"
@@ -6,16 +6,17 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/systemli/etherpad-toolchain/pkg"
 )
 
 // Purger
 type Purger struct {
-	Etherpad *Etherpad
+	Etherpad *pkg.Etherpad
 	DryRun   bool
 }
 
 // NewPurger returns a instance of Purger.
-func NewPurger(ep *Etherpad, dryRun bool) *Purger {
+func NewPurger(ep *pkg.Etherpad, dryRun bool) *Purger {
 	return &Purger{
 		Etherpad: ep,
 		DryRun:   dryRun,

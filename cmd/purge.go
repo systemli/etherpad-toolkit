@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/systemli/etherpad-toolchain/pkg"
+	"github.com/systemli/etherpad-toolchain/pkg/purge"
 )
 
 var (
@@ -26,7 +27,7 @@ func init() {
 
 func runPurger(cmd *cobra.Command, args []string) {
 	etherpad := pkg.NewEtherpadClient(etherpadUrl, etherpadApiKey)
-	purger := pkg.NewPurger(etherpad, dryRun)
+	purger := purge.NewPurger(etherpad, dryRun)
 
 	pads, err := etherpad.ListAllPads()
 	if err != nil {
