@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -51,7 +50,7 @@ func (ep *Etherpad) ListAllPads() ([]string, error) {
 	}
 
 	if body.Code != 0 {
-		return nil, errors.New(fmt.Sprintf("error: %s (code: %d)", body.Message, body.Code))
+		return nil, fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
 	}
 
 	return body.Data.PadIDs, nil
@@ -79,7 +78,7 @@ func (ep *Etherpad) GetLastEdited(padID string) (time.Time, error) {
 	}
 
 	if body.Code != 0 {
-		return time.Unix(0, 0), errors.New(fmt.Sprintf("error: %s (code: %d)", body.Message, body.Code))
+		return time.Unix(0, 0), fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
 	}
 
 	return time.Unix(body.Data.LastEdited/1000, 0), nil
@@ -104,7 +103,7 @@ func (ep *Etherpad) DeletePad(padID string) error {
 	}
 
 	if body.Code != 0 {
-		return errors.New(fmt.Sprintf("error: %s (code: %d)", body.Message, body.Code))
+		return fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
 	}
 
 	return nil
