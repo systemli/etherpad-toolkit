@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"strings"
@@ -11,12 +11,14 @@ import (
 // Purger
 type Purger struct {
 	Etherpad *Etherpad
+	DryRun   bool
 }
 
 // NewPurger returns a instance of Purger.
-func NewPurger(ep *Etherpad) *Purger {
+func NewPurger(ep *Etherpad, dryRun bool) *Purger {
 	return &Purger{
 		Etherpad: ep,
+		DryRun:   dryRun,
 	}
 }
 
@@ -75,11 +77,12 @@ func (p *Purger) worker(pads chan string, out chan int) {
 		deletable := lastEdited.Before(time.Now().Add(padDuration(pad)))
 		if deletable {
 			log.WithField("pad", pad).WithField("lastEdited", lastEdited).Debug("Delete Pad")
-			//TODO: Activate Deletion
-			//err := p.Etherpad.DeletePad(pad)
-			//if err != nil {
-			//	log.WithError(err).WithField("pad", pad).Error("failed to delete pad")
-			//}
+			if !p.DryRun {
+				err := p.Etherpad.DeletePad(pad)
+				if err != nil {
+					log.WithError(err).WithField("pad", pad).Error("failed to delete pad")
+				}
+			}
 		}
 	}
 	out <- 0
