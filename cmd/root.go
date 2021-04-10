@@ -12,8 +12,8 @@ var (
 	logFormat      string
 
 	rootCmd = &cobra.Command{
-		Use:   "etherpad-toolchain",
-		Short: "A toolchain for Etherpad",
+		Use:   "etherpad-toolkit",
+		Short: "A toolkit for Etherpad",
 		Long:  "Etherpad Toolchain is a collection for most common Etherpad maintenance tasks.",
 	}
 )

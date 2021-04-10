@@ -3,8 +3,9 @@ package cmd
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/systemli/etherpad-toolchain/pkg"
-	"github.com/systemli/etherpad-toolchain/pkg/purge"
+	"github.com/systemli/etherpad-toolkit/pkg"
+	"github.com/systemli/etherpad-toolkit/pkg/helper"
+	"github.com/systemli/etherpad-toolkit/pkg/purge"
 )
 
 var (
@@ -34,7 +35,7 @@ func runPurger(cmd *cobra.Command, args []string) {
 		log.WithError(err).Error("failed to fetch pads")
 		return
 	}
-	sorted := pkg.SortPads(pads)
+	sorted := helper.SortPads(pads)
 
 	purger.PurgePads(sorted, concurrency)
 }

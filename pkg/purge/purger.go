@@ -6,7 +6,7 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/systemli/etherpad-toolchain/pkg"
+	"github.com/systemli/etherpad-toolkit/pkg"
 )
 
 // Purger
@@ -28,9 +28,6 @@ func (p *Purger) PurgePads(sorted map[string][]string, concurrency int) {
 	var wg sync.WaitGroup
 
 	for suffix, padIds := range sorted {
-		if suffix == "keep" {
-			continue
-		}
 		wg.Add(1)
 		go p.processPads(padIds, suffix, concurrency, &wg)
 	}
@@ -77,7 +74,7 @@ func (p *Purger) worker(pads chan string, out chan int) {
 
 		deletable := lastEdited.Before(time.Now().Add(padDuration(pad)))
 		if deletable {
-			log.WithField("pad", pad).WithField("lastEdited", lastEdited).Debug("Delete Pad")
+			log.WithField("pad", pad).WithField("lastEdited", lastEdited).Info("Delete Pad")
 			if !p.DryRun {
 				err := p.Etherpad.DeletePad(pad)
 				if err != nil {
