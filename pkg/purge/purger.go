@@ -73,14 +73,17 @@ func (p *Purger) worker(pads chan string, out chan int) {
 		}
 
 		deletable := lastEdited.Before(time.Now().Add(padDuration(pad)))
-		if deletable {
-			log.WithField("pad", pad).WithField("lastEdited", lastEdited).Info("Delete Pad")
-			if !p.DryRun {
-				err := p.Etherpad.DeletePad(pad)
-				if err != nil {
-					log.WithError(err).WithField("pad", pad).Error("failed to delete pad")
-				}
-			}
+		if !deletable {
+			continue
+		}
+
+		log.WithField("pad", pad).WithField("lastEdited", lastEdited).Info("Delete Pad")
+		if p.DryRun {
+			continue
+		}
+		err = p.Etherpad.DeletePad(pad)
+		if err != nil {
+			log.WithError(err).WithField("pad", pad).Error("failed to delete pad")
 		}
 	}
 	out <- 0
