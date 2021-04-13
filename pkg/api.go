@@ -147,5 +147,10 @@ func (ep *Etherpad) sendRequest(path string, params map[string]interface{}) (*ht
 	}
 	uri.RawQuery = parameters.Encode()
 
-	return ep.Client.Get(uri.String())
+	req, err := http.NewRequest(http.MethodGet, uri.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return ep.Client.Do(req)
 }
