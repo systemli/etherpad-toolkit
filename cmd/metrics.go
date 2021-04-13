@@ -17,7 +17,7 @@ var (
 	metricsCmd = &cobra.Command{
 		Use:   "metrics",
 		Short: "Serves Pad related metrics",
-		Long:  "Command to serve pad related metrics for Prometheus",
+		Long:  "The Command serves the count of pads grouped by suffix in Prometheus format.",
 		Run:   runMetrics,
 	}
 )
