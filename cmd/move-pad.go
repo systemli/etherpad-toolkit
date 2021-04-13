@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	force bool
+	forceMove bool
 
 	movePadCmd = &cobra.Command{
 		Use:   "move-pad [sourceID] [destinationID]",
@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	movePadCmd.LocalFlags().BoolVar(&force, "force", false, "If set and the destination pad exists, it will be overwritten.")
+	movePadCmd.LocalFlags().BoolVar(&forceMove, "force", false, "If set and the destination pad exists, it will be overwritten.")
 
 	rootCmd.AddCommand(movePadCmd)
 }
@@ -35,7 +35,7 @@ func runMove(cmd *cobra.Command, args []string) {
 	sourceID := args[0]
 	destinationID := args[1]
 
-	err := etherpad.MovePad(sourceID, destinationID, false)
+	err := etherpad.MovePad(sourceID, destinationID, forceMove)
 	if err != nil {
 		log.WithError(err).WithFields(log.Fields{"sourceID": sourceID, "destinationID": destinationID}).Error("error while moving pad")
 	} else {
