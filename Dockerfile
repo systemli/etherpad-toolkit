@@ -23,6 +23,4 @@ COPY etherpad-toolkit /etherpad-toolkit
 
 USER appuser:appuser
 
-EXPOSE 9011
-
 ENTRYPOINT ["/etherpad-toolkit"]
