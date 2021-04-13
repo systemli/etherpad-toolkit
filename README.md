@@ -1,6 +1,6 @@
 # etherpad-toolkit
 
-[![Integration](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml) [![Quality](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml)
+[![Integration](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml) [![Quality](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml) [![Release](https://github.com/systemli/etherpad-toolkit/actions/workflows/release.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/release.yml)
 
 **Etherpad Toolkit is a collection for most common [Etherpad](https://github.com/ether/etherpad-lite) maintenance tasks.**
 
@@ -24,4 +24,10 @@ Flags:
       --log.level string         Log level (default "info")
 
 Use "etherpad-toolkit [command] --help" for more information about a command.
+```
+
+## Docker
+
+```
+docker run systemli/etherpad-toolkit:latest --help
 ```
