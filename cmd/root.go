@@ -14,7 +14,7 @@ var (
 	rootCmd = &cobra.Command{
 		Use:   "etherpad-toolkit",
 		Short: "A toolkit for Etherpad",
-		Long:  "Etherpad Toolchain is a collection for most common Etherpad maintenance tasks.",
+		Long:  "Etherpad Toolkit is a collection for most common Etherpad maintenance tasks.",
 	}
 )
 

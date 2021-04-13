@@ -2,7 +2,7 @@
 
 [![Integration](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/integration.yml) [![Quality](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml/badge.svg)](https://github.com/systemli/etherpad-toolkit/actions/workflows/quality.yml)
 
-**Etherpad Toolchain is a collection for most common [Etherpad](https://github.com/ether/etherpad-lite) maintenance tasks.**
+**Etherpad Toolkit is a collection for most common [Etherpad](https://github.com/ether/etherpad-lite) maintenance tasks.**
 
 ```
 Usage:
