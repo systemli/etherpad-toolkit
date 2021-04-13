@@ -134,6 +134,31 @@ func (ep *Etherpad) MovePad(sourceID, destinationID string, force bool) error {
 	return nil
 }
 
+// CopyPad copies a pad with full history and chat. If force is true and the destination pad exists, it will be overwritten.
+// See: https://etherpad.org/doc/v1.8.4/#index_copypad_sourceid_destinationid_force_false
+func (ep *Etherpad) CopyPad(sourceID, destinationID string, force bool) error {
+	params := map[string]interface{}{"sourceID": sourceID, "destinationID": destinationID, "force": force}
+	res, err := ep.sendRequest("copyPad", params)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	var body struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+	if err = json.NewDecoder(res.Body).Decode(&body); err != nil {
+		return err
+	}
+
+	if body.Code != 0 {
+		return fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
+	}
+
+	return nil
+}
+
 func (ep *Etherpad) sendRequest(path string, params map[string]interface{}) (*http.Response, error) {
 	uri, err := url.Parse(fmt.Sprintf("%s/api/%s/%s", ep.url, ep.apiVersion, path))
 	if err != nil {

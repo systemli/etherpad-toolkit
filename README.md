@@ -9,6 +9,7 @@ Usage:
   etherpad-toolkit [command]
 
 Available Commands:
+  copy-pad    Copies a single Pad
   delete-pad  Removes a single Pad
   help        Help about any command
   metrics     Serves Pad related metrics
