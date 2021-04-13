@@ -37,3 +37,6 @@ jobs:
 
       - name: Build
         run: go build ./...
+
+      - name: Docker
+        run: docker build .
