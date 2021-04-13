@@ -16,7 +16,7 @@ func TestEtherpad_ListAllPads_Successful(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 0, "message":"ok", "data": {"padIDs": ["pad1", "pad2"]}}`))
+		_, _ = w.Write([]byte(`{"code": 0, "message":"ok", "data": {"padIDs": ["pad1", "pad2"]}}`))
 	}))
 	defer ts.Close()
 
@@ -32,7 +32,7 @@ func TestEtherpad_ListAllPads_WrongApiKey(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code":4,"message":"no or wrong API Key","data":null}`))
+		_, _ = w.Write([]byte(`{"code":4,"message":"no or wrong API Key","data":null}`))
 	}))
 	defer ts.Close()
 
@@ -48,7 +48,7 @@ func TestEtherpad_GetLastEdited_Successful(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 0, "message":"ok", "data": {"lastEdited": 1340815946602}}`))
+		_, _ = w.Write([]byte(`{"code": 0, "message":"ok", "data": {"lastEdited": 1340815946602}}`))
 	}))
 	defer ts.Close()
 
@@ -57,14 +57,14 @@ func TestEtherpad_GetLastEdited_Successful(t *testing.T) {
 
 	edited, err := etherpad.GetLastEdited("pad")
 	assert.Nil(t, err)
-	assert.Equal(t, "2012-06-27 18:52:26 +0200 CEST", edited.String())
+	assert.Equal(t, int64(1340815946), edited.Unix())
 }
 
 func TestEtherpad_GetLastEdited_NotFound(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
+		_, _ = w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
 	}))
 	defer ts.Close()
 
@@ -80,7 +80,7 @@ func TestEtherpad_DeletePad_Successful(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 0, "message":"ok", "data": null}`))
+		_, _ = w.Write([]byte(`{"code": 0, "message":"ok", "data": null}`))
 	}))
 	defer ts.Close()
 
@@ -95,7 +95,7 @@ func TestEtherpad_DeletePad_NotFound(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
+		_, _ = w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
 	}))
 	defer ts.Close()
 
@@ -110,7 +110,7 @@ func TestEtherpad_MovePad_Successful(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 0, "message":"ok", "data": null}`))
+		_, _ = w.Write([]byte(`{"code": 0, "message":"ok", "data": null}`))
 	}))
 	defer ts.Close()
 
@@ -125,7 +125,7 @@ func TestEtherpad_MovePad_NotFound(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
+		_, _ = w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
 	}))
 	defer ts.Close()
 
