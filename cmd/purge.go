@@ -12,9 +12,18 @@ var (
 	concurrency int
 	dryRun      bool
 
+	longDescription = `
+The command checks every Pad if the last edited date is older than the defined limit. Older Pads will be deleted.
+
+Pads without a suffix will be deleted after 30 days of inactivity.
+Pads with the suffix "-temp" will be deleted after 24 hours of inactivity.
+Pads with the suffix "-keep" will be deleted after 365 days of inactivity.
+`
+
 	purgeCmd = &cobra.Command{
 		Use:   "purge",
 		Short: "Removes old Pads entirely from Etherpad",
+		Long:  longDescription,
 		Run:   runPurger,
 	}
 )
