@@ -38,7 +38,7 @@ docker run systemli/etherpad-toolkit:latest --help
 
 ### Copy Pad
 
-The command copies a pad with full history and chat.. If force is true and the destination pad exists, it will be overwritten.
+The command copies a pad with full history and chat. If force is true and the destination pad exists, it will be overwritten.
 
 ```
 Usage:

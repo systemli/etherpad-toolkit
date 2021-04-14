@@ -14,7 +14,7 @@ var (
 	copyPadCmd = &cobra.Command{
 		Use:   "copy-pad [sourceID] [destinationID]",
 		Short: "Copies a single Pad",
-		Long:  "The command copies a pad with full history and chat.. If force is true and the destination pad exists, it will be overwritten.",
+		Long:  "The command copies a pad with full history and chat. If force is true and the destination pad exists, it will be overwritten.",
 		Run:   runCopy,
 	}
 )
