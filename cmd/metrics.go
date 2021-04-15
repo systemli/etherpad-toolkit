@@ -23,7 +23,7 @@ var (
 )
 
 func init() {
-	metricsCmd.LocalFlags().StringVar(&listenAddr, "listen.addr", ":9012", "")
+	metricsCmd.Flags().StringVar(&listenAddr, "listen.addr", ":9012", "")
 
 	rootCmd.AddCommand(metricsCmd)
 }

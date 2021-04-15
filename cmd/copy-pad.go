@@ -20,7 +20,7 @@ var (
 )
 
 func init() {
-	copyPadCmd.LocalFlags().BoolVar(&forceCopy, "force", false, "If set and the destination pad exists, it will be overwritten.")
+	copyPadCmd.Flags().BoolVar(&forceCopy, "force", false, "If set and the destination pad exists, it will be overwritten.")
 
 	rootCmd.AddCommand(copyPadCmd)
 }
