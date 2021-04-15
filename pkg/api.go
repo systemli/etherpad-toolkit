@@ -159,6 +159,34 @@ func (ep *Etherpad) CopyPad(sourceID, destinationID string, force bool) error {
 	return nil
 }
 
+// GetRevisionsCount returns the number of revisions of this pad.
+// See: https://etherpad.org/doc/v1.8.4/#index_getrevisionscount_padid
+func (ep *Etherpad) GetRevisionsCount(padID string) (int, error) {
+	params := map[string]interface{}{"padID": padID}
+	res, err := ep.sendRequest("getRevisionsCount", params)
+	if err != nil {
+		return 0, err
+	}
+	defer res.Body.Close()
+
+	var body struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			Revisions int `json:"revisions"`
+		}
+	}
+	if err = json.NewDecoder(res.Body).Decode(&body); err != nil {
+		return 0, err
+	}
+
+	if body.Code != 0 {
+		return 0, fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
+	}
+
+	return body.Data.Revisions, nil
+}
+
 func (ep *Etherpad) sendRequest(path string, params map[string]interface{}) (*http.Response, error) {
 	uri, err := url.Parse(fmt.Sprintf("%s/api/%s/%s", ep.url, ep.apiVersion, path))
 	if err != nil {

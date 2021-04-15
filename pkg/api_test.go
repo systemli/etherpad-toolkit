@@ -165,3 +165,35 @@ func TestEtherpad_CopyPad_NotFound(t *testing.T) {
 	err := etherpad.CopyPad("pad1", "pad2", false)
 	assert.NotNil(t, err)
 }
+
+func TestEtherpad_GetRevisionsCount_Successful(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"code": 0, "message":"ok", "data": {"revisions": 31}}`))
+	}))
+	defer ts.Close()
+
+	etherpad := NewEtherpadClient(ts.URL, etherpadApiKey)
+	etherpad.Client = ts.Client()
+
+	rev, err := etherpad.GetRevisionsCount("pad")
+	assert.Nil(t, err)
+	assert.Equal(t, 31, rev)
+}
+
+func TestEtherpad_GetRevisionsCount_NotFound(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"code": 1, "message":"padID does not exist", "data": null}`))
+	}))
+	defer ts.Close()
+
+	etherpad := NewEtherpadClient(ts.URL, etherpadApiKey)
+	etherpad.Client = ts.Client()
+
+	rev, err := etherpad.GetRevisionsCount("pad")
+	assert.NotNil(t, err)
+	assert.Equal(t, 0, rev)
+}
