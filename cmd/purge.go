@@ -30,8 +30,8 @@ Pads with the suffix "-keep" will be deleted after 365 days of inactivity.
 )
 
 func init() {
-	purgeCmd.LocalFlags().IntVar(&concurrency, "concurrency", 4, "Concurrency for the purge process")
-	purgeCmd.LocalFlags().BoolVar(&dryRun, "dry-run", false, "Enable dry-run")
+	purgeCmd.Flags().IntVar(&concurrency, "concurrency", 4, "Concurrency for the purge process")
+	purgeCmd.Flags().BoolVar(&dryRun, "dry-run", false, "Enable dry-run")
 
 	rootCmd.AddCommand(purgeCmd)
 }
