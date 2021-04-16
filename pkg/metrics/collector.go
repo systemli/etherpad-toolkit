@@ -9,12 +9,14 @@ import (
 
 type PadCollector struct {
 	etherpad     *pkg.Etherpad
+	suffixes     []string
 	PadGaugeDesc *prometheus.Desc
 }
 
-func NewPadCollector(etherpad *pkg.Etherpad) *PadCollector {
+func NewPadCollector(etherpad *pkg.Etherpad, suffixes []string) *PadCollector {
 	return &PadCollector{
 		etherpad:     etherpad,
+		suffixes:     suffixes,
 		PadGaugeDesc: prometheus.NewDesc("etherpad_toolkit_pads", "The current number of pads", []string{"suffix"}, nil),
 	}
 }
@@ -30,7 +32,7 @@ func (pc *PadCollector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	sorted := helper.SortPads(allPads)
+	sorted := helper.GroupPadsBySuffixes(allPads, pc.suffixes)
 
 	for suffix, pads := range sorted {
 		ch <- prometheus.MustNewConstMetric(
