@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -13,6 +14,7 @@ import (
 
 var (
 	listenAddr string
+	suffixes   string
 
 	metricsCmd = &cobra.Command{
 		Use:   "metrics",
@@ -23,14 +25,15 @@ var (
 )
 
 func init() {
-	metricsCmd.Flags().StringVar(&listenAddr, "listen.addr", ":9012", "")
+	metricsCmd.Flags().StringVar(&listenAddr, "listen.addr", ":9012", "Address on which to expose metrics.")
+	metricsCmd.Flags().StringVar(&suffixes, "suffixes", "keep,temp", "Suffixes to group the pads.")
 
 	rootCmd.AddCommand(metricsCmd)
 }
 
 func runMetrics(cmd *cobra.Command, args []string) {
 	etherpad := pkg.NewEtherpadClient(etherpadUrl, etherpadApiKey)
-	prometheus.MustRegister(metrics.NewPadCollector(etherpad))
+	prometheus.MustRegister(metrics.NewPadCollector(etherpad, strings.Split(suffixes, ",")))
 
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(listenAddr, nil))
