@@ -11,14 +11,23 @@ import (
 var (
 	concurrency int
 	dryRun      bool
+	expiration  string
 
 	longDescription = `
-The command checks every Pad if the last edited date is older than the defined limit. Older Pads will be deleted.
+The command checks every Pad for it’s last edited date. If it is older than the defined limit, the pad will be deleted.
 
-Pads without any changes (revisions) will be deleted.
-Pads without a suffix will be deleted after 30 days of inactivity.
-Pads with the suffix "-temp" will be deleted after 24 hours of inactivity.
-Pads with the suffix "-keep" will be deleted after 365 days of inactivity.
+Pads without any changes (revisions) will be deleted. This can happen when no content was changed in the pad 
+(e.g. a person misspelles a pad).
+Pads will grouped by the pre-defined suffixes. Every suffix has a defined expiration time. If the pad is older than the 
+defined expiration time, the pad will be deleted.
+
+Example:
+
+etherpad-toolkit purge --expiration "default:720h,temp:24h,keep:8760h"
+
+This configuration will group the pads in three clusters: default (expiration: 30 days, suffix is required!), 
+temp (expiration: 24 hours), keep (expiration: 365 days). If pads in the clusters older than the given expiration the 
+pads will be deleted.
 `
 
 	purgeCmd = &cobra.Command{
@@ -30,6 +39,7 @@ Pads with the suffix "-keep" will be deleted after 365 days of inactivity.
 )
 
 func init() {
+	purgeCmd.Flags().StringVar(&expiration, "expiration", "", "Configuration for pad expiration duration. Example: \"default:720h,temp:24h,keep:8760h\"")
 	purgeCmd.Flags().IntVar(&concurrency, "concurrency", 4, "Concurrency for the purge process")
 	purgeCmd.Flags().BoolVar(&dryRun, "dry-run", false, "Enable dry-run")
 
@@ -38,14 +48,11 @@ func init() {
 
 func runPurger(cmd *cobra.Command, args []string) {
 	etherpad := pkg.NewEtherpadClient(etherpadUrl, etherpadApiKey)
-	purger := purge.NewPurger(etherpad, dryRun)
-
-	pads, err := etherpad.ListAllPads()
+	exp, err := helper.ParsePadExpiration(expiration)
 	if err != nil {
-		log.WithError(err).Error("failed to fetch pads")
+		log.WithError(err).Error("failed to parse expiration string")
 		return
 	}
-	sorted := helper.SortPads(pads)
-
-	purger.PurgePads(sorted, concurrency)
+	purger := purge.NewPurger(etherpad, exp, dryRun)
+	purger.PurgePads(concurrency)
 }
