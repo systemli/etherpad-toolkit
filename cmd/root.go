@@ -11,22 +11,24 @@ var (
 	logLevel       string
 	logFormat      string
 
-	rootCmd = &cobra.Command{
-		Use:   "etherpad-toolkit",
-		Short: "A toolkit for Etherpad",
-		Long:  "Etherpad Toolkit is a collection for most common Etherpad maintenance tasks.",
-	}
+	rootCmd = NewRootCmd()
 )
 
 func Execute() error {
 	return rootCmd.Execute()
 }
 
-func init() {
-	rootCmd.PersistentFlags().StringVar(&etherpadUrl, "etherpad.url", "http://localhost:9001", "URL to access Etherpad")
-	rootCmd.PersistentFlags().StringVar(&etherpadApiKey, "etherpad.apikey", "", "API Key for Etherpad")
-	rootCmd.PersistentFlags().StringVar(&logLevel, "log.level", "info", "Log level")
-	rootCmd.PersistentFlags().StringVar(&logFormat, "log.format", "text", "Format for log output")
+func NewRootCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "etherpad-toolkit",
+		Short: "A toolkit for Etherpad",
+		Long:  "Etherpad Toolkit is a collection for most common Etherpad maintenance tasks.",
+	}
+
+	cmd.PersistentFlags().StringVar(&etherpadUrl, "etherpad.url", "http://localhost:9001", "URL to access Etherpad")
+	cmd.PersistentFlags().StringVar(&etherpadApiKey, "etherpad.apikey", "", "API Key for Etherpad")
+	cmd.PersistentFlags().StringVar(&logLevel, "log.level", "info", "Log level")
+	cmd.PersistentFlags().StringVar(&logFormat, "log.format", "text", "Format for log output")
 
 	if logFormat == "json" {
 		log.SetFormatter(&log.JSONFormatter{})
@@ -39,4 +41,6 @@ func init() {
 		log.WithError(err).Fatal("failed to parse log level")
 	}
 	log.SetLevel(lvl)
+
+	return cmd
 }

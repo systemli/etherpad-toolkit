@@ -30,29 +30,33 @@ temp (expiration: 24 hours), keep (expiration: 365 days). If pads in the cluster
 pads will be deleted.
 `
 
-	purgeCmd = &cobra.Command{
-		Use:   "purge",
-		Short: "Removes old Pads entirely from Etherpad",
-		Long:  longDescription,
-		Run:   runPurger,
-	}
+	purgeCmd = NewPurgeCmd()
 )
 
 func init() {
-	purgeCmd.Flags().StringVar(&expiration, "expiration", "", "Configuration for pad expiration duration. Example: \"default:720h,temp:24h,keep:8760h\"")
-	purgeCmd.Flags().IntVar(&concurrency, "concurrency", 4, "Concurrency for the purge process")
-	purgeCmd.Flags().BoolVar(&dryRun, "dry-run", false, "Enable dry-run")
-
 	rootCmd.AddCommand(purgeCmd)
 }
 
-func runPurger(cmd *cobra.Command, args []string) {
-	etherpad := pkg.NewEtherpadClient(etherpadUrl, etherpadApiKey)
-	exp, err := helper.ParsePadExpiration(expiration)
-	if err != nil {
-		log.WithError(err).Error("failed to parse expiration string")
-		return
+func NewPurgeCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "purge",
+		Short: "Removes old Pads entirely from Etherpad",
+		Long:  longDescription,
+		Run: func(cmd *cobra.Command, args []string) {
+			etherpad := pkg.NewEtherpadClient(etherpadUrl, etherpadApiKey)
+			exp, err := helper.ParsePadExpiration(expiration)
+			if err != nil {
+				log.WithError(err).Error("failed to parse expiration string")
+				return
+			}
+			purger := purge.NewPurger(etherpad, exp, dryRun)
+			purger.PurgePads(concurrency)
+		},
 	}
-	purger := purge.NewPurger(etherpad, exp, dryRun)
-	purger.PurgePads(concurrency)
+
+	cmd.Flags().StringVar(&expiration, "expiration", "", "Configuration for pad expiration duration. Example: \"default:720h,temp:24h,keep:8760h\"")
+	cmd.Flags().IntVar(&concurrency, "concurrency", 4, "Concurrency for the purge process")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Enable dry-run")
+
+	return cmd
 }
