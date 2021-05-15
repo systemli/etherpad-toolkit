@@ -17,11 +17,12 @@ Available Commands:
   purge       Removes old Pads entirely from Etherpad
 
 Flags:
-      --etherpad.apikey string   API Key for Etherpad
-      --etherpad.url string      URL to access Etherpad (default "http://localhost:9001")
+      --etherpad.apikey string   API Key for Etherpad (Env: ETHERPAD_APIKEY)
+      --etherpad.url string      URL to access Etherpad (Env: ETHERPAD_URL) (default "http://localhost:9001")
   -h, --help                     help for etherpad-toolkit
-      --log.format string        Format for log output (default "text")
-      --log.level string         Log level (default "info")
+      --log.format string        Format for log output (Env: LOG_FORMAT) (default "text")
+      --log.level string         Log level (Env: LOG_LEVEL) (default "info")
+
 
 Use "etherpad-toolkit [command] --help" for more information about a command.
 ```
