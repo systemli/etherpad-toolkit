@@ -3,7 +3,7 @@ module github.com/systemli/etherpad-toolkit
 go 1.17
 
 require (
-	github.com/prometheus/client_golang v1.15.0
+	github.com/prometheus/client_golang v1.15.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
