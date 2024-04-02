@@ -4,7 +4,7 @@
 
 **Etherpad Toolkit is a collection for most common [Etherpad](https://github.com/ether/etherpad-lite) maintenance tasks.**
 
-```
+```text
 Usage:
   etherpad-toolkit [command]
 
@@ -31,7 +31,7 @@ Use "etherpad-toolkit [command] --help" for more information about a command.
 
 You can run the etherpad-toolkit with Docker
 
-```
+```text
 docker run systemli/etherpad-toolkit:latest --help
 ```
 
@@ -41,7 +41,7 @@ docker run systemli/etherpad-toolkit:latest --help
 
 The command copies a pad with full history and chat. If force is true and the destination pad exists, it will be overwritten.
 
-```
+```text
 Usage:
   etherpad-toolkit copy-pad [sourceID] [destinationID] [flags]
 
@@ -55,7 +55,7 @@ Flags:
 
 The command removes a single pad entirely from Etherpad.
 
-```
+```text
 Usage:
   etherpad-toolkit delete-pad [pad] [flags]
 
@@ -68,7 +68,7 @@ Flags:
 
 The Command serves the count of pads grouped by suffix in Prometheus format.
 
-```
+```text
 Usage:
   etherpad-toolkit metrics [flags]
 
@@ -82,7 +82,7 @@ Flags:
 
 The command moves a single pad. If force is true and the destination pad exists, it will be overwritten.
 
-```
+```text
 Usage:
   etherpad-toolkit move-pad [sourceID] [destinationID] [flags]
 
@@ -108,7 +108,7 @@ This configuration will group the pads in three clusters: default (expiration: 3
 temp (expiration: 24 hours), keep (expiration: 365 days). If pads in the clusters older than the given expiration the
 pads will be deleted.
 
-```
+```text
 Usage:
   etherpad-toolkit purge [flags]
 
