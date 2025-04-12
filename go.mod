@@ -1,7 +1,8 @@
 module github.com/systemli/etherpad-toolkit
 
-go 1.21
-toolchain go1.24.1
+go 1.22
+
+toolchain go1.24.2
 
 require (
 	github.com/prometheus/client_golang v1.22.0
