@@ -84,6 +84,86 @@ func (ep *Etherpad) GetLastEdited(padID string) (time.Time, error) {
 	return time.Unix(body.Data.LastEdited/1000, 0), nil
 }
 
+// ListSavedRevisions returns the list of saved revisions of a Pad.
+// See: https://etherpad.org/doc/v1.8.4/#index_listsavedrevisions_padid
+func (ep *Etherpad) ListSavedRevisions(padID string) ([]int, error) {
+	params := map[string]interface{}{"padID": padID}
+	res, err := ep.sendRequest("listSavedRevisions", params)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	var body struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			SavedRevisions []int `json:"savedRevisions"`
+		} `json:"data"`
+	}
+	if err = json.NewDecoder(res.Body).Decode(&body); err != nil {
+		return nil, err
+	}
+	if body.Code != 0 {
+		return nil, fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
+	}
+
+	return body.Data.SavedRevisions, nil
+}
+
+// GetText returns the text of a Pad.
+// See: https://etherpad.org/doc/v1.8.4/index.html#index_gettext_padid_rev
+func (ep *Etherpad) GetText(padID string) (string, error) {
+	params := map[string]interface{}{"padID": padID}
+	res, err := ep.sendRequest("getText", params)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	var body struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Data    struct {
+			Text string `json:"text"`
+		} `json:"data"`
+	}
+	if err = json.NewDecoder(res.Body).Decode(&body); err != nil {
+		return "", err
+	}
+
+	if body.Code != 0 {
+		return "", fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
+	}
+
+	return body.Data.Text, nil
+}
+
+// RestoreRevision restores a Pad to a specific revision.
+// See: https://etherpad.org/doc/v1.8.4/#index_restorerevision_padid_rev
+func (ep *Etherpad) RestoreRevision(padID, rev string) error {
+	params := map[string]interface{}{"padID": padID, "rev": rev}
+	res, err := ep.sendRequest("restoreRevision", params)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	var body struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+	if err = json.NewDecoder(res.Body).Decode(&body); err != nil {
+		return err
+	}
+
+	if body.Code != 0 {
+		return fmt.Errorf("error: %s (code: %d)", body.Message, body.Code)
+	}
+
+	return nil
+}
+
 // DeletePad removes a Pad.
 // See: https://etherpad.org/doc/v1.8.4/#index_deletepad_padid
 func (ep *Etherpad) DeletePad(padID string) error {
